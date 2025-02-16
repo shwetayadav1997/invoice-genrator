@@ -10,11 +10,7 @@ import {
   SectionButtons,
 } from '../styles/quotationForm.styles';
 import { QuotationData } from '../types/quotation.types';
-import {  Navigate, Router , useNavigate} from 'react-router-dom';
-
-// interface QuotationFormProps {
-//   initialData?: QuotationData;
-// }
+import { useNavigate} from 'react-router-dom';
 
 const defaultItem = {
   description: '',
