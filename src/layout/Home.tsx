@@ -4,14 +4,14 @@ import logo from '../assets/logo_2.png'; // Adjust the path to your logo
 import invoiceIcon from '../assets/invoice.svg'; // Adjust the path to your invoice icon
 import folderIcon from '../assets/folder.svg'; // Adjust the path to your folder icon
 import { ButtonWithIcon } from '../styles/quotationForm.styles';
-import img1 from '../assets/img1.jpg';
+import img1 from '../assets/background.jpg';
 import { useNavigate } from "react-router-dom";
 
 const HeaderContainer = styled.header`
   display: flex;
   align-items: center;
-  background-color: #d8b4fe;
   padding: 10px;
+
 `;
 
 const Logo = styled.img`
@@ -26,7 +26,9 @@ const Home: React.FC = () => {
             <div style={{ backgroundImage: `url(${img1})`, backgroundRepeat: 'no-repeat', backgroundPosition: 'center', backgroundSize: 'cover', padding: '20px', width: '100%', height: '100vh' }}>
                 <HeaderContainer >
                     <Logo src={logo} alt="Logo" />
-                    <span style={{ fontSize: '24px', fontWeight: 'bold' }}>R.G. Engineering</span>
+                    <span style={{ fontSize: '24px', fontWeight: 'bold', color: 'rgb(102, 51, 153)', fontFamily: 'Arial, sans-serif', textShadow: 'rgba(67, 53, 167, 0.5) 3px 2px 2px' }}>
+                        R.G. ENGINEERING WORKS
+                    </span>
                 </HeaderContainer>
 
                 <div style={{ display: 'flex', justifyContent: 'center', gap: '20px', marginTop: '20px', flexWrap: 'wrap' }}>
