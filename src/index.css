@@ -1,0 +1,13 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+@font-face {
+    font-family: 'Algerian';
+    src: url('/public/fonts/Algerian.ttf') format('truetype');
+  }
+  
+  .algerian-font {
+    font-family: 'Algerian', sans-serif;
+  }
