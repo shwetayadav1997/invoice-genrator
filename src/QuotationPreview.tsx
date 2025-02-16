@@ -6,7 +6,8 @@ import {
 } from './styles/quotation.styles';
 import logo from './assets/logo_2.png';
 import { useLocation } from 'react-router-dom';
-
+import { jsPDF } from "jspdf";
+import html2canvas from 'html2canvas';
 
 interface ItemDetail {
     description: string;
@@ -194,8 +195,20 @@ const QuotationPreview: React.FC = () => {
     };
 
     const handleDownload = () => {
-        window.print();
+        const input = document.querySelector('.printable-area') as HTMLElement;
+        if (input) {
+            html2canvas(input).then((canvas) => {
+                const imgData = canvas.toDataURL('image/png');
+                const pdf = new jsPDF('p', 'mm', 'a4');
+                const imgProps = pdf.getImageProperties(imgData);
+                const pdfWidth = pdf.internal.pageSize.getWidth();
+                const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+                pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+                pdf.save('quotation.pdf');
+            });
+        }
     };
+
 
     return (
         <>
