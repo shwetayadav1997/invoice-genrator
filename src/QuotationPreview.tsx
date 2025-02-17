@@ -374,12 +374,6 @@ const QuotationPreview: React.FC = () => {
 
 
                 </QuotationContainer>
-
-                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                    <img src="/src/assets/whatsapp.svg" alt="Logo" style={{ width: '50px', height: '50px', margin: '10px' }} />
-                    <img src="/src/assets/mail.svg" alt="Logo" style={{ width: '50px', height: '50px', margin: '10px' }} />
-                    <img src="/src/assets/download.svg" alt="Logo" style={{ width: '50px', height: '50px', margin: '10px' }} />
-                </div>
             </div>
         </>
 

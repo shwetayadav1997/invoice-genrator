@@ -26,7 +26,7 @@ const Home: React.FC = () => {
             <div style={{ backgroundImage: `url(${img1})`, backgroundRepeat: 'no-repeat', backgroundPosition: 'center', backgroundSize: 'cover', padding: '20px', width: '100%', height: '100vh' }}>
                 <HeaderContainer >
                     <Logo src={logo} alt="Logo" />
-                    <span style={{ fontSize: '24px', fontWeight: 'bold', color: 'rgb(102, 51, 153)', fontFamily: 'Arial, sans-serif', textShadow: 'rgba(67, 53, 167, 0.5) 3px 2px 2px' }}>
+                    <span style={{ fontSize: '24px',  fontWeight: 'bold', color: '#7A1CAC', fontFamily: 'auto', textShadow: 'rgba(67, 53, 174, 0.5) 1px 2px 3px'}}>
                         R.G. ENGINEERING WORKS
                     </span>
                 </HeaderContainer>

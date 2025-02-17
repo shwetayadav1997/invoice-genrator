@@ -10,7 +10,7 @@ import {
   SectionButtons,
 } from '../styles/quotationForm.styles';
 import { QuotationData } from '../types/quotation.types';
-import { useNavigate} from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const defaultItem = {
   description: '',
@@ -265,9 +265,9 @@ const QuotationForm: React.FC = () => {
     formData.sections = newSections // update the sections array with the modified item
 
     e.preventDefault();
-  // Navigate('/preview'); 
-  // Navigate({ to: '/preview', state: formData });
-  navigate('/preview', { state: formData });
+    // Navigate('/preview'); 
+    // Navigate({ to: '/preview', state: formData });
+    navigate('/preview', { state: formData });
 
   };
 
@@ -275,10 +275,13 @@ const QuotationForm: React.FC = () => {
     <FormContainer>
       <form>
         <FormSection>
-          <h2>Customer Information</h2>
+          <h2 style={{
+            color: '#711DB0',
+            fontWeight: 600
+          }}>Customer Information</h2>
           <FormRow>
             <FormGroup>
-              <label>Customer Name</label>
+              <label> Name</label>
               <input
                 type="text"
                 name="name"
@@ -288,7 +291,7 @@ const QuotationForm: React.FC = () => {
               />
             </FormGroup>
             <FormGroup>
-              <label>Customer Address</label>
+              <label> Address</label>
               <input
                 type="text"
                 name="location"
@@ -333,7 +336,10 @@ const QuotationForm: React.FC = () => {
         </FormSection>
 
         <FormSection>
-          <h2>Items</h2>
+          <h2 style={{
+            color: '#711DB0',
+            fontWeight: 600
+          }}>Particulars</h2>
           {formData.sections.map((section, sectionIndex) => (
             <div key={sectionIndex}>
               <FormGroup>
@@ -345,7 +351,7 @@ const QuotationForm: React.FC = () => {
 
                 />
               </FormGroup>
-              <ItemsTable>
+              {/* <ItemsTable>
                 <thead>
                   <tr>
                     <th>Description</th>
@@ -412,7 +418,83 @@ const QuotationForm: React.FC = () => {
                     </tr>
                   ))}
                 </tbody>
-              </ItemsTable>
+              </ItemsTable> */}
+
+              <FormSection style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
+                {section.items.map((item, itemIndex) => (
+                  <>
+                    <FormGroup>
+                      <label>Description</label>
+                      <input
+                        type="text"
+                        value={section.items[0].description}
+                        onChange={(e) =>
+                          handleItemChange(sectionIndex, 0, 'description', e.target.value)
+                        }
+                      />
+                    </FormGroup>
+
+                    <FormGroup>
+                      <label>HSN/SAC</label>
+                      <input
+                        type="text"
+                        value={section.items[0].hsn_sac}
+                        onChange={(e) =>
+                          handleItemChange(sectionIndex, 0, 'hsn_sac', e.target.value)
+                        }
+                      />
+                    </FormGroup>
+
+
+
+                    <FormGroup>
+                      <label>Rate</label>
+                      <input
+                        type="text"
+                        value={section.items[0].rate}
+                        onChange={(e) =>
+                          handleItemChange(sectionIndex, 0, 'rate', e.target.value)
+                        }
+                      />
+                    </FormGroup>
+
+                    <FormGroup>
+                      <label>Quantity</label>
+                      <input
+                        type="text"
+                        value={section.items[0].qty}
+                        onChange={(e) =>
+                          handleItemChange(sectionIndex, 0, 'qty', e.target.value)
+                        }
+                      />
+                    </FormGroup>
+
+                    <FormGroup>
+                      <label>Amount</label>
+                      <input
+                        type="text"
+                        disabled
+                        value={section.items[0].amount}
+                        onChange={(e) =>
+                          handleItemChange(sectionIndex, 0, 'amount', e.target.value)
+                        }
+                      />
+                    </FormGroup>
+
+                    <Button
+                      type="button"
+                      className="secondary"
+                      onClick={() => removeItem(sectionIndex, itemIndex)}
+                      disabled={section.items.length === 1}
+                    >
+                      Remove
+                    </Button>
+                  </>
+                ))}
+
+
+
+              </FormSection>
               <SectionButtons>
                 <Button type="button" onClick={() => addItem(sectionIndex)}>
                   Add Item
@@ -425,6 +507,7 @@ const QuotationForm: React.FC = () => {
                 >
                   Remove Section
                 </Button>
+
               </SectionButtons>
             </div>
           ))}
@@ -435,7 +518,10 @@ const QuotationForm: React.FC = () => {
 
         <Button type="button" className="primary" onClick={calculateTotals}>Calculate Total</Button>
         <FormSection>
-          <h2>Amount Details</h2>
+          <h2 style={{
+            color: '#711DB0',
+            fontWeight: 600
+          }}>Amount Details</h2>
           <FormRow>
             <FormGroup>
               <label>Total</label>
@@ -460,7 +546,7 @@ const QuotationForm: React.FC = () => {
           <Button type="button" onClick={handleSaveData}>Generate Quotation</Button>
         </ButtonGroup>
       </form>
-    </FormContainer>
+    </FormContainer >
   );
 };
 
