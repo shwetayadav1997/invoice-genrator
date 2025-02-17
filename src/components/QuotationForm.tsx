@@ -350,6 +350,7 @@ const QuotationForm: React.FC = () => {
 
                 />
               </FormGroup>
+
               <FormSection style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
                 {section.items.map((item, itemIndex) => (
                   <>
@@ -368,7 +369,7 @@ const QuotationForm: React.FC = () => {
                       <label>HSN/SAC</label>
                       <input
                         type="text"
-                        value={section.items[0].hsn_sac}
+                        value={item.hsn_sac}
                         onChange={(e) =>
                           handleItemChange(sectionIndex, 0, 'hsn_sac', e.target.value)
                         }
@@ -381,7 +382,7 @@ const QuotationForm: React.FC = () => {
                       <label>Rate</label>
                       <input
                         type="text"
-                        value={section.items[0].rate}
+                        value={item.rate}
                         onChange={(e) =>
                           handleItemChange(sectionIndex, 0, 'rate', e.target.value)
                         }
@@ -392,7 +393,7 @@ const QuotationForm: React.FC = () => {
                       <label>Quantity</label>
                       <input
                         type="text"
-                        value={section.items[0].qty}
+                        value={item.qty}
                         onChange={(e) =>
                           handleItemChange(sectionIndex, 0, 'qty', e.target.value)
                         }
@@ -404,7 +405,7 @@ const QuotationForm: React.FC = () => {
                       <input
                         type="text"
                         disabled
-                        value={section.items[0].amount}
+                        value={item.amount}
                         onChange={(e) =>
                           handleItemChange(sectionIndex, 0, 'amount', e.target.value)
                         }
