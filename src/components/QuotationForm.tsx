@@ -4,7 +4,6 @@ import {
   FormSection,
   FormRow,
   FormGroup,
-  ItemsTable,
   Button,
   ButtonGroup,
   SectionButtons,
@@ -351,75 +350,6 @@ const QuotationForm: React.FC = () => {
 
                 />
               </FormGroup>
-              {/* <ItemsTable>
-                <thead>
-                  <tr>
-                    <th>Description</th>
-                    <th>HSN/SAC</th>
-                    <th>Quantity</th>
-                    <th>Rate</th>
-                    <th>Amount</th>
-                    <th>Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {section.items.map((item, itemIndex) => (
-                    <tr key={itemIndex}>
-                      <td>
-                        <input
-                          type="text"
-                          value={item.description}
-                          onChange={(e) =>
-                            handleItemChange(sectionIndex, itemIndex, 'description', e.target.value)
-                          }
-
-                        />
-                      </td>
-                      <td>
-                        <input
-                          type="text"
-                          value={item.hsn_sac}
-                          onChange={(e) =>
-                            handleItemChange(sectionIndex, itemIndex, 'hsn_sac', e.target.value)
-                          }
-                        />
-                      </td>
-                      <td>
-                        <input
-                          type="text"
-                          value={item.qty}
-                          onChange={(e) =>
-                            handleItemChange(sectionIndex, itemIndex, 'qty', e.target.value)
-                          }
-
-                        />
-                      </td>
-                      <td>
-                        <input
-                          type="text"
-                          value={item.rate}
-                          onChange={(e) =>
-                            handleItemChange(sectionIndex, itemIndex, 'rate', e.target.value)
-                          }
-
-                        />
-                      </td>
-                      <td>{item.amount}</td>
-                      <td>
-                        <Button
-                          type="button"
-                          className="secondary"
-                          onClick={() => removeItem(sectionIndex, itemIndex)}
-                          disabled={section.items.length === 1}
-                        >
-                          Remove
-                        </Button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </ItemsTable> */}
-
               <FormSection style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
                 {section.items.map((item, itemIndex) => (
                   <>
