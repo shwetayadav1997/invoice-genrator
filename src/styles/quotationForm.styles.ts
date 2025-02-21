@@ -153,3 +153,10 @@ export const Overlay = styled.div`
   background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black */
   z-index: 1; /* Ensure it is above the background */
 `;
+
+export const Card = styled.div`
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 16px;
+`;

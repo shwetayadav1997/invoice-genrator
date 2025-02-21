@@ -7,6 +7,7 @@ import {
   Button,
   ButtonGroup,
   SectionButtons,
+  Card,
 } from '../styles/quotationForm.styles';
 import { QuotationData } from '../types/quotation.types';
 import { useNavigate } from 'react-router-dom';
@@ -46,6 +47,7 @@ const emptyQuotationData: QuotationData = {
 
 const QuotationForm: React.FC = () => {
   const navigate = useNavigate(); // Initialize the navigate function
+  const [calculationStatus, setCalculationStatus] = useState(false);
 
   const [formData, setFormData] = useState<QuotationData>(emptyQuotationData);
   const handleCustomerChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -69,7 +71,7 @@ const QuotationForm: React.FC = () => {
   };
 
   const handleItemChange = (sectionIndex: number, itemIndex: number, field: string, value: string) => {
-
+    setCalculationStatus(false);
     if (field === 'qty' || field === 'rate') {
       if (isNaN(Number(value))) {
         return
@@ -239,9 +241,12 @@ const QuotationForm: React.FC = () => {
         grandTotal,
       },
     }));
+    setCalculationStatus(true);
+
   };
 
   const handleSaveData = (e: React.FormEvent) => {
+    calculateTotals();
     let newSections: any = []
     formData.sections.forEach((section) => {
 
@@ -264,8 +269,6 @@ const QuotationForm: React.FC = () => {
     formData.sections = newSections // update the sections array with the modified item
 
     e.preventDefault();
-    // Navigate('/preview'); 
-    // Navigate({ to: '/preview', state: formData });
     navigate('/preview', { state: formData });
 
   };
@@ -354,128 +357,149 @@ const QuotationForm: React.FC = () => {
               <FormSection style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
                 {section.items.map((item, itemIndex) => (
                   <>
-                    <FormGroup>
-                      <label>Description</label>
-                      <input
-                        type="text"
-                        value={section.items[0].description}
-                        onChange={(e) =>
-                          handleItemChange(sectionIndex, 0, 'description', e.target.value)
-                        }
-                      />
-                    </FormGroup>
+                    <Card key={itemIndex} style={{ width: '100%', display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
 
-                    <FormGroup>
-                      <label>HSN/SAC</label>
-                      <input
-                        type="text"
-                        value={item.hsn_sac}
-                        onChange={(e) =>
-                          handleItemChange(sectionIndex, 0, 'hsn_sac', e.target.value)
-                        }
-                      />
-                    </FormGroup>
+                      <FormGroup style={{ width: '100%' }}>
+                        <label>Description</label>
+                        <input
+                          type="text"
+                          value={item.description}
+                          onChange={(e) =>
+                            handleItemChange(sectionIndex, itemIndex, 'description', e.target.value)
+                          }
+                        />
+                      </FormGroup>
 
+                      <FormGroup>
+                        <label>HSN/SAC</label>
+                        <input
+                          type="text"
+                          value={item.hsn_sac}
+                          onChange={(e) =>
+                            handleItemChange(sectionIndex, itemIndex, 'hsn_sac', e.target.value)
+                          }
+                        />
+                      </FormGroup>
 
+                      <FormGroup>
+                        <label>Rate</label>
+                        <input
+                          type="text"
+                          value={item.rate === 0 ? '' : item.rate}
+                          onChange={(e) =>
+                            handleItemChange(sectionIndex, itemIndex, 'rate', e.target.value)
+                          }
+                        />
+                      </FormGroup>
 
-                    <FormGroup>
-                      <label>Rate</label>
-                      <input
-                        type="text"
-                        value={item.rate}
-                        onChange={(e) =>
-                          handleItemChange(sectionIndex, 0, 'rate', e.target.value)
-                        }
-                      />
-                    </FormGroup>
+                      <FormGroup>
+                        <label>Quantity</label>
+                        <input
+                          type="text"
+                          value={item.qty === 0 ? '' : item.qty}
+                          onChange={(e) =>
+                            handleItemChange(sectionIndex, itemIndex, 'qty', e.target.value)
+                          }
+                        />
+                      </FormGroup>
 
-                    <FormGroup>
-                      <label>Quantity</label>
-                      <input
-                        type="text"
-                        value={item.qty}
-                        onChange={(e) =>
-                          handleItemChange(sectionIndex, 0, 'qty', e.target.value)
-                        }
-                      />
-                    </FormGroup>
+                      <FormGroup>
+                        <label>Amount</label>
+                        <input
+                          type="text"
+                          disabled
+                          value={item.amount === 0 ? '' : item.amount}
+                          onChange={(e) =>
+                            handleItemChange(sectionIndex, 0, 'amount', e.target.value)
+                          }
+                        />
+                      </FormGroup>
+                    </Card>
 
-                    <FormGroup>
-                      <label>Amount</label>
-                      <input
-                        type="text"
-                        disabled
-                        value={item.amount}
-                        onChange={(e) =>
-                          handleItemChange(sectionIndex, 0, 'amount', e.target.value)
-                        }
-                      />
-                    </FormGroup>
+                    {/* <div style={{ width: "20px", height: "20px", gap: 0, justifyContent: "flex-end" }} onClick={() => removeItem(sectionIndex, itemIndex)}>
+                      <img src={deleteIcon} alt="Delete" />
+                    </div> */}
 
-                    <Button
-                      type="button"
-                      className="secondary"
-                      onClick={() => removeItem(sectionIndex, itemIndex)}
-                      disabled={section.items.length === 1}
-                    >
-                      Remove
+                    <Button type="button" onClick={() => addItem(sectionIndex)} style={{ marginLeft: 'auto'}}>
+                      Add Item
                     </Button>
+
+
+                   { section.items.length > 1 && <Button type="button" onClick={() => removeItem(sectionIndex, itemIndex)}>
+                      Delete Item
+                    </Button>}
                   </>
                 ))}
 
-
-
               </FormSection>
-              <SectionButtons>
-                <Button type="button" onClick={() => addItem(sectionIndex)}>
+
+              {/* <Button
+                type="button"
+                className="secondary"
+                // onClick={() => removeItem(sectionIndex, itemIndex)}
+                disabled={section.items.length === 1}
+              >
+                <img src="" alt="delete" />
+              </Button> */}
+
+
+              <SectionButtons style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                {/* <Button type="button" onClick={() => addItem(sectionIndex)}>
                   Add Item
-                </Button>
-                <Button
+                </Button> */}
+                { formData.sections.length > 1 && <Button
                   type="button"
                   className="secondary"
                   onClick={() => removeSection(sectionIndex)}
                   disabled={formData.sections.length === 1}
                 >
                   Remove Section
+                </Button> }
+
+                <Button type="button" onClick={addSection}>
+                  Add Section
                 </Button>
 
               </SectionButtons>
             </div>
           ))}
-          <Button type="button" onClick={addSection}>
-            Add Section
-          </Button>
+
         </FormSection>
 
-        <Button type="button" className="primary" onClick={calculateTotals}>Calculate Total</Button>
-        <FormSection>
-          <h2 style={{
-            color: '#711DB0',
-            fontWeight: 600
-          }}>Amount Details</h2>
-          <FormRow>
-            <FormGroup>
-              <label>Total</label>
-              <input type="text" value={formData.amounts.total.toFixed(2)} disabled />
-            </FormGroup>
-            <FormGroup>
-              <label>SGST (9%)</label>
-              <input type="text" value={formData.amounts.sgst.toFixed(2)} disabled />
-            </FormGroup>
-            <FormGroup>
-              <label>CGST (9%)</label>
-              <input type="text" value={formData.amounts.cgst.toFixed(2)} disabled />
-            </FormGroup>
-          </FormRow>
-          <FormGroup>
-            <label>Grand Total</label>
-            <input type="text" value={formData.amounts.grandTotal.toFixed(2)} disabled />
-          </FormGroup>
-        </FormSection>
+        <Button style={{ width: "100%"}} type="button" className="primary" onClick={calculateTotals}>Calculate Total</Button>
 
-        <ButtonGroup>
-          <Button type="button" onClick={handleSaveData}>Generate Quotation</Button>
-        </ButtonGroup>
+
+        {calculationStatus && <>
+          <FormSection>
+            <h2 style={{
+              color: '#711DB0',
+              fontWeight: 600
+            }}>Amount Details</h2>
+            <FormRow>
+              <FormGroup>
+                <label>Total</label>
+                <input type="text" value={formData.amounts.total.toFixed(2)} disabled />
+              </FormGroup>
+              <FormGroup>
+                <label>SGST (9%)</label>
+                <input type="text" value={formData.amounts.sgst.toFixed(2)} disabled />
+              </FormGroup>
+              <FormGroup>
+                <label>CGST (9%)</label>
+                <input type="text" value={formData.amounts.cgst.toFixed(2)} disabled />
+              </FormGroup>
+            </FormRow>
+            <FormGroup>
+              <label>Grand Total</label>
+              <input type="text" value={formData.amounts.grandTotal.toFixed(2)} disabled />
+            </FormGroup>
+          </FormSection>
+
+          <ButtonGroup>
+            <Button type="button" onClick={handleSaveData}>Generate Quotation</Button>
+          </ButtonGroup>
+        </>
+        }
       </form>
     </FormContainer >
   );
