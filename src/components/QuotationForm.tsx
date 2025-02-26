@@ -11,7 +11,7 @@ import {
 } from '../styles/quotationForm.styles';
 import { QuotationData } from '../types/quotation.types';
 import { useNavigate } from 'react-router-dom';
-
+import { addRow } from '../services/googleSheet.service';
 const defaultItem = {
   description: '',
   hsn_sac: '',
@@ -245,7 +245,7 @@ const QuotationForm: React.FC = () => {
 
   };
 
-  const handleSaveData = (e: React.FormEvent) => {
+  const handleSaveData = async (e: React.FormEvent) => {
     calculateTotals();
     let newSections: any = []
     formData.sections.forEach((section) => {
@@ -269,6 +269,7 @@ const QuotationForm: React.FC = () => {
     formData.sections = newSections // update the sections array with the modified item
 
     e.preventDefault();
+    await addRow(formData);
     navigate('/preview', { state: formData });
 
   };
