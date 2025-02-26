@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled , { keyframes} from 'styled-components';
 
 export const FormContainer = styled.div`
   max-width: 1400px;
@@ -159,4 +159,35 @@ export const Card = styled.div`
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   padding: 16px;
+`;
+
+const spin = keyframes`
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+`;
+
+// Create the Spinner styled component
+export const Spinner = styled.div`
+  border: 5px solid #f3f3f3; /* Light grey */
+  border-top: 5px solid #8a38ae; /* Blue */
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: ${spin} 2s linear infinite;
+  margin: auto;
+`;
+
+// Create the SpinnerContainer styled component
+export const SpinnerContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; /* Full viewport height */
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent white */
+  z-index: 9999; /* Ensure it is above other elements */
 `;

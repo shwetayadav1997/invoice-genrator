@@ -200,7 +200,6 @@ const QuotationPreview: React.FC = () => {
 
     return (
         <>
-            <button onClick={handleDownload} style={{ margin: '10px', background: '#0066cc', color: 'white', border: 'none', padding: '10px 20px', borderRadius: '4px', cursor: 'pointer', fontSize: '14px', fontWeight: '500' }}>Download</button>
             <div className="printable-area">
                 <QuotationContainer>
                     <div style={{
@@ -371,9 +370,11 @@ const QuotationPreview: React.FC = () => {
                             </tr>
                         </tbody>
                     </Table>
-
-
                 </QuotationContainer>
+                <div style={{ textAlign: 'center' }}>
+                    <button onClick={handleDownload} style={{ margin: '10px', background: '#0066cc', color: 'white', border: 'none', padding: '10px 20px', borderRadius: '4px', cursor: 'pointer', fontSize: '14px', fontWeight: '500' }}>Download</button>
+
+                </div>
             </div>
         </>
 
