@@ -1,24 +1,4 @@
-export interface CompanyInfo {
-  name: string;
-  tagline: string;
-  office: string;
-  factory: string;
-  email: string;
-  mobile: string;
-  gstin: string;
-}
-
-export interface CustomerInfo {
-  name: string;
-  location: string;
-  refNo: string;
-  date: string;
-  partyGSTIN: string;
-  state: string;
-  stateCode: string;
-}
-
-export interface ItemDetail {
+export interface Item {
   description: string;
   hsn_sac: string;
   qty: number;
@@ -28,10 +8,27 @@ export interface ItemDetail {
 
 export interface Section {
   title: string;
-  items: ItemDetail[];
+  rate: number;
+  qty: number;
+  amount: number;
+  items: Item[];
+  hsn_sac?: string; // Optional field for HSN/SAC code
 }
 
-export interface BankDetail {
+export interface Customer {
+  name: string;
+  street: string;
+  area: string;
+  city: string;
+  pincode: string;
+  refNo: string;
+  date: string;
+  partyGSTIN?: string;
+  state?: string;
+  stateCode?: string;
+}
+
+export interface BankDetails {
   bankName: string;
   accountNo: string;
   branch: string;
@@ -46,8 +43,21 @@ export interface Amounts {
   grandTotal: number;
 }
 
-export interface QuotationData {
-  customer: CustomerInfo;
+export interface Company {
+  name: string;
+  tagline: string;
+  office: string;
+  factory: string;
+  email: string;
+  mobile: string;
+  gstin: string;
+}
+
+export interface FormData {
+  company: Company;
+  customer: Customer;
   sections: Section[];
+  bankDetails: BankDetails;
   amounts: Amounts;
+  hsn_sac?: string; // Optional field for HSN/SAC code
 }
