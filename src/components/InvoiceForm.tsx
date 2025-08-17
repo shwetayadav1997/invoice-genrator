@@ -1,9 +1,9 @@
-import React, { useRef, useState } from "react";
-import { Button } from "../ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
-import { Input } from "../ui/input";
-import { Label } from "../ui/label";
-import { Textarea } from "../ui/textarea";
+import  { useRef, useState } from "react";
+import { Button } from "./ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
+import { Input } from "./ui/input";
+import { Label } from "./ui/label";
+import { Textarea } from "./ui/textarea";
 import { Plus, Trash2, Download, Hash, ChevronDown, ChevronRight } from "lucide-react";
 import { calculateTotal } from "../utils";
 import { FormData, Section, Customer, Item } from "../types/quotation.types";
