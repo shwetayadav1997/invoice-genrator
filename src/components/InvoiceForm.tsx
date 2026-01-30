@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { Textarea } from "../ui/textarea";
-import { Plus, Trash2, Download, Hash, ChevronDown, ChevronRight } from "lucide-react";
+import { Plus, Trash2, Download, Hash, ChevronDown, ChevronRight, Share2 } from "lucide-react";
 import { calculateTotal } from "../ui/utils";
 import { FormData, Section, Customer, Item } from "../types/quotation.types";
 import QuotationPreview from "../QuotationPreview";
@@ -232,6 +232,22 @@ export default function InvoiceForm() {
     handlePrint();
   };
 
+  const handleShare = async () => {
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: `Invoice for ${formData.customer.name || "Customer"}`,
+          text: `Invoice details: Grand Total ₹${formData.amounts.grandTotal.toFixed(2)}`,
+          url: window.location.href,
+        });
+      } catch (error) {
+        console.log("Error sharing:", error);
+      }
+    } else {
+      alert("Sharing is not supported on this device/browser.");
+    }
+  };
+
   const toggleItems = (sectionIndex: number) => {
     setOpenItems((prev) => ({ ...prev, [sectionIndex]: !prev[sectionIndex] }));
   };
@@ -283,7 +299,7 @@ export default function InvoiceForm() {
                     />
                   </div>
                   <div className="lg:col-span-2">
-                   
+
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                       <div>
                         <Label
@@ -736,131 +752,131 @@ export default function InvoiceForm() {
             </Card>
 
             {activeTab === "info" && (
-            <>
-              {/* Line Items */}
-              <div className="divide-y divide-gray-200">
-                {formData.sections.map((section, sectionIndex) => {
-                  const sectionTotal =
-                    section.amount +
-                    section.items.reduce(
-                      (total, item) => total + item.amount,
-                      0
+              <>
+                {/* Line Items */}
+                <div className="divide-y divide-gray-200">
+                  {formData.sections.map((section, sectionIndex) => {
+                    const sectionTotal =
+                      section.amount +
+                      section.items.reduce(
+                        (total, item) => total + item.amount,
+                        0
+                      );
+
+                    return (
+                      <div key={sectionIndex} className="p-4 space-y-4">
+                        {/* Section Header */}
+                        {(section.title || section.amount > 0) && (
+                          <div className="flex items-start justify-between">
+                            <div className="flex-1">
+                              <div className="flex items-center gap-2 mb-1"></div>
+                              <h3 className="font-medium text-gray-900 text-base leading-tight">
+                                {section.title || `Section ${sectionIndex + 1}`}
+                              </h3>
+                              {section.qty > 0 && section.rate > 0 && (
+                                <div className="flex items-center gap-4 mt-2 text-sm text-gray-600">
+                                  <span>Qty: {section.qty}</span>
+                                  <span>Rate: ₹{section.rate.toFixed(2)}</span>
+                                </div>
+                              )}
+                            </div>
+                            <div className="text-right ml-4">
+                              <div className="font-bold text-lg text-primary">
+                                ₹{sectionTotal.toLocaleString()}
+                              </div>
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Items */}
+                        {section.items.length > 0 && (
+                          <div className="space-y-3 ml-8">
+                            {section.items.map((item, itemIndex) => (
+                              <div
+                                key={itemIndex}
+                                className="border-l-2 border-gray-200 pl-4 py-2"
+                              >
+                                <div className="flex justify-between items-start">
+                                  <div className="flex-1">
+                                    <div className="flex items-center gap-2 mb-1"></div>
+                                    {item.description && (
+                                      <p className="font-medium text-gray-900 text-sm leading-tight mb-1">
+                                        {item.description}
+                                      </p>
+                                    )}
+                                    <div className="flex flex-wrap gap-3 text-xs text-gray-600">
+                                      {item.hsn_sac && (
+                                        <span>HSN: {item.hsn_sac}</span>
+                                      )}
+                                      {item.qty > 0 && (
+                                        <span>Qty: {item.qty}</span>
+                                      )}
+                                      {item.rate > 0 && (
+                                        <span>Rate: ₹{item.rate.toFixed(2)}</span>
+                                      )}
+                                    </div>
+                                  </div>
+                                  <div className="text-right ml-3">
+                                    <div className="font-medium text-primary">
+                                      {item.amount > 0
+                                        ? `₹${item.amount.toFixed(2)}`
+                                        : "-"}
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
                     );
+                  })}
+                </div>
 
-                  return (
-                    <div key={sectionIndex} className="p-4 space-y-4">
-                      {/* Section Header */}
-                      {(section.title || section.amount > 0) && (
-                        <div className="flex items-start justify-between">
-                          <div className="flex-1">
-                            <div className="flex items-center gap-2 mb-1"></div>
-                            <h3 className="font-medium text-gray-900 text-base leading-tight">
-                              {section.title || `Section ${sectionIndex + 1}`}
-                            </h3>
-                            {section.qty > 0 && section.rate > 0 && (
-                              <div className="flex items-center gap-4 mt-2 text-sm text-gray-600">
-                                <span>Qty: {section.qty}</span>
-                                <span>Rate: ₹{section.rate.toFixed(2)}</span>
-                              </div>
-                            )}
-                          </div>
-                          <div className="text-right ml-4">
-                            <div className="font-bold text-lg text-primary">
-                              ₹{sectionTotal.toLocaleString()}
-                            </div>
-                          </div>
-                        </div>
-                      )}
+                {/* Tax Summary */}
+                <div className="bg-gray-50 p-4 border-t-2 border-gray-200">
+                  <h3 className="font-medium text-gray-900 mb-3 flex items-center gap-2">
+                    <Hash className="w-4 h-4" />
+                    Tax Calculations
+                  </h3>
 
-                      {/* Items */}
-                      {section.items.length > 0 && (
-                        <div className="space-y-3 ml-8">
-                          {section.items.map((item, itemIndex) => (
-                            <div
-                              key={itemIndex}
-                              className="border-l-2 border-gray-200 pl-4 py-2"
-                            >
-                              <div className="flex justify-between items-start">
-                                <div className="flex-1">
-                                  <div className="flex items-center gap-2 mb-1"></div>
-                                  {item.description && (
-                                    <p className="font-medium text-gray-900 text-sm leading-tight mb-1">
-                                      {item.description}
-                                    </p>
-                                  )}
-                                  <div className="flex flex-wrap gap-3 text-xs text-gray-600">
-                                    {item.hsn_sac && (
-                                      <span>HSN: {item.hsn_sac}</span>
-                                    )}
-                                    {item.qty > 0 && (
-                                      <span>Qty: {item.qty}</span>
-                                    )}
-                                    {item.rate > 0 && (
-                                      <span>Rate: ₹{item.rate.toFixed(2)}</span>
-                                    )}
-                                  </div>
-                                </div>
-                                <div className="text-right ml-3">
-                                  <div className="font-medium text-primary">
-                                    {item.amount > 0
-                                      ? `₹${item.amount.toFixed(2)}`
-                                      : "-"}
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      )}
+                  <div className="space-y-2 mb-4">
+                    <div className="flex justify-between items-center text-sm">
+                      <span className="text-gray-600">SGST @ {9}%</span>
+                      <span className="font-medium">
+                        ₹{formData.amounts.sgst.toFixed(2)}
+                      </span>
                     </div>
-                  );
-                })}
-              </div>
-
-              {/* Tax Summary */}
-              <div className="bg-gray-50 p-4 border-t-2 border-gray-200">
-                <h3 className="font-medium text-gray-900 mb-3 flex items-center gap-2">
-                  <Hash className="w-4 h-4" />
-                  Tax Calculations
-                </h3>
-
-                <div className="space-y-2 mb-4">
-                  <div className="flex justify-between items-center text-sm">
-                    <span className="text-gray-600">SGST @ {9}%</span>
-                    <span className="font-medium">
-                      ₹{formData.amounts.sgst.toFixed(2)}
-                    </span>
+                    <div className="flex justify-between items-center text-sm">
+                      <span className="text-gray-600">CGST @ {9}%</span>
+                      <span className="font-medium">
+                        ₹{formData.amounts.cgst.toFixed(2)}
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center text-sm">
+                      <span className="text-gray-600">IGST @ { }%</span>
+                      <span className="font-medium">
+                        ₹{formData.amounts.igst.toFixed(2)}
+                      </span>
+                    </div>
                   </div>
-                  <div className="flex justify-between items-center text-sm">
-                    <span className="text-gray-600">CGST @ {9}%</span>
-                    <span className="font-medium">
-                      ₹{formData.amounts.cgst.toFixed(2)}
-                    </span>
-                  </div>
-                  <div className="flex justify-between items-center text-sm">
-                    <span className="text-gray-600">IGST @ {}%</span>
-                    <span className="font-medium">
-                      ₹{formData.amounts.igst.toFixed(2)}
-                    </span>
+
+                  {/* Grand Total */}
+                  <div className="border-t border-gray-300 pt-3">
+                    <div className="flex justify-between items-center">
+                      <span className="font-bold text-gray-900">GRAND TOTAL</span>
+                      <span className="font-bold text-xl text-primary">
+                        ₹
+                        {formData.amounts.grandTotal.toLocaleString("en-IN", {
+                          minimumFractionDigits: 2,
+                          maximumFractionDigits: 2,
+                        })}
+                      </span>
+                    </div>
                   </div>
                 </div>
-
-                {/* Grand Total */}
-                <div className="border-t border-gray-300 pt-3">
-                  <div className="flex justify-between items-center">
-                    <span className="font-bold text-gray-900">GRAND TOTAL</span>
-                    <span className="font-bold text-xl text-primary">
-                      ₹
-                      {formData.amounts.grandTotal.toLocaleString("en-IN", {
-                        minimumFractionDigits: 2,
-                        maximumFractionDigits: 2,
-                      })}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </>
-          )}
+              </>
+            )}
 
             {/* Total and Actions */}
             <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
@@ -887,6 +903,14 @@ export default function InvoiceForm() {
                     <Download className="w-4 h-4 mr-2" />
                     Download Invoice
                   </Button>
+                  <Button
+                    onClick={handleShare}
+                    type="button"
+                    className="bg-blue-600 hover:bg-blue-700 text-white"
+                  >
+                    <Share2 className="w-4 h-4 mr-2" />
+                    Share
+                  </Button>
                   {/* <button onClick={(e) => handlePrint(e)}>
                       Print Quotation
                     </button> */}
@@ -904,7 +928,7 @@ export default function InvoiceForm() {
             </div>
           </form>
 
-          
+
         </div>
       </div>
     </div>
