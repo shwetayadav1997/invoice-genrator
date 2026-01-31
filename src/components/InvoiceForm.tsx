@@ -1,4 +1,6 @@
 import { useRef, useState } from "react";
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Input } from "../ui/input";
@@ -61,7 +63,7 @@ export default function InvoiceForm() {
         printWindow.document.write(`
           <html>
             <head>
-              <title>Print</title>
+              <title>Invoice - ${formData.customer.name || "Customer"}</title>
             </head>
             <body>${printContent}</body>
           </html>
@@ -77,7 +79,6 @@ export default function InvoiceForm() {
   );
   const [formData, setFormData] = useState<FormData>(initialFormData);
 
-  const [isDownloadClicked, setIsDownloadClicked] = useState(false);
   const [openItems, setOpenItems] = useState<{ [key: number]: boolean }>({});
   const updateCustomer = (field: keyof Customer, value: string) => {
     setActiveTab("customer");
@@ -228,20 +229,59 @@ export default function InvoiceForm() {
   };
 
   const download = () => {
-    setIsDownloadClicked(true);
     handlePrint();
   };
 
   const handleShare = async () => {
-    if (navigator.share) {
+    if (printRef.current && navigator.share) {
       try {
-        await navigator.share({
-          title: `Invoice for ${formData.customer.name || "Customer"}`,
-          text: `Invoice details: Grand Total ₹${formData.amounts.grandTotal.toFixed(2)}`,
-          url: window.location.href,
+        const element = printRef.current;
+
+        // Temporarily make it visible for capture but keep it hidden from user
+        const originalStyle = element.style.cssText;
+        element.style.display = 'block';
+        element.style.position = 'fixed';
+        element.style.left = '-10000px';
+        element.style.top = '0';
+        element.style.width = '185mm'; // Match the width in QuotationPreview
+
+        const canvas = await html2canvas(element, {
+          scale: 2,
+          useCORS: true,
+          logging: false,
+          backgroundColor: '#ffffff'
         });
+
+        // Revert style
+        element.style.cssText = originalStyle;
+
+        const imgData = canvas.toDataURL('image/png');
+        const pdf = new jsPDF('p', 'mm', 'a4');
+        const imgProps = pdf.getImageProperties(imgData);
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+
+        pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+        const pdfBlob = pdf.output('blob');
+
+        const file = new File(
+          [pdfBlob],
+          `Invoice_${formData.customer.name.replace(/[^a-z0-9]/gi, '_') || 'Customer'}.pdf`,
+          { type: 'application/pdf' }
+        );
+
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+          await navigator.share({
+            files: [file],
+            title: `Invoice for ${formData.customer.name || "Customer"}`,
+            text: `Please find attached the invoice PDF.`,
+          });
+        } else {
+          // Fallback if file sharing is not supported
+          alert("Sharing PDFs is not supported on this browser version, but you can download it instead.");
+        }
       } catch (error) {
-        console.log("Error sharing:", error);
+        console.error("Error sharing PDF:", error);
       }
     } else {
       alert("Sharing is not supported on this device/browser.");
@@ -891,7 +931,6 @@ export default function InvoiceForm() {
                     type="button"
                     variant="outline"
                     onClick={() => amountHandler()}
-                    className="order-2 sm:order-1"
                   >
                     Preview Amount Details
                   </Button>
@@ -915,14 +954,12 @@ export default function InvoiceForm() {
                       Print Quotation
                     </button> */}
 
-                  {isDownloadClicked && (
-                    <div>
-                      {/* Hidden container to render QuotationPreview */}
-                      <div ref={printRef} style={{ display: "none" }}>
-                        <QuotationPreview data={formData} />
-                      </div>
+                  <div>
+                    {/* Hidden container to render QuotationPreview */}
+                    <div ref={printRef} style={{ display: "none" }}>
+                      <QuotationPreview data={formData} />
                     </div>
-                  )}
+                  </div>
                 </div>
               </div>
             </div>
