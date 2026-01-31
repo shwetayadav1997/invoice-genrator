@@ -231,13 +231,50 @@ export default function InvoiceForm() {
   };
 
   const handleShare = async () => {
-    // Note: Generating a real PDF file object programmatically requires libraries like 'jspdf'.
-    // WITHOUT packages, the standard way to share as PDF on mobile is the Print dialog.
-    // On iOS/Android, the print screen has a "Share" icon that creates a perfect PDF.
-    if (navigator.userAgent.match(/Android|iPhone|iPad|iPod/i)) {
-      alert("Opening Share options... On the next screen, tap the 'Share' icon (iOS) or 'Save as PDF' (Android) to send this as a PDF.");
+    if (printRef.current && navigator.share) {
+      try {
+        const htmlContent = `
+          <!DOCTYPE html>
+          <html>
+            <head>
+              <title>Invoice - ${formData.customer.name || "Customer"}</title>
+              <style>
+                body { background: white; margin: 0; padding: 20px; font-family: sans-serif; }
+              </style>
+            </head>
+            <body>
+              ${printRef.current.innerHTML}
+            </body>
+          </html>
+        `;
+
+        const blob = new Blob([htmlContent], { type: "text/html" });
+        const file = new File(
+          [blob],
+          `Invoice_${formData.customer.name.replace(/[^a-z0-9]/gi, '_') || 'Customer'}.html`,
+          { type: "text/html" }
+        );
+
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+          await navigator.share({
+            files: [file],
+            title: `Invoice for ${formData.customer.name || "Customer"}`,
+            text: `Please find attached the invoice. Grand Total: ₹${formData.amounts.grandTotal.toFixed(2)}`,
+          });
+        } else {
+          // Fallback if file sharing not supported but text sharing is
+          await navigator.share({
+            title: `Invoice for ${formData.customer.name || "Customer"}`,
+            text: `Invoice details: Grand Total ₹${formData.amounts.grandTotal.toFixed(2)}`,
+            url: window.location.href,
+          });
+        }
+      } catch (error) {
+        console.log("Error sharing:", error);
+      }
+    } else {
+      alert("Sharing is not supported on this device/browser, or Preview not ready.");
     }
-    handlePrint();
   };
 
   const toggleItems = (sectionIndex: number) => {
